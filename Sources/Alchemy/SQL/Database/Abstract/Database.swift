@@ -5,7 +5,7 @@ import PostgresKit
 /// with. Currently, the only two implementations are
 /// `PostgresDatabase` and `MySQLDatabase`. The QueryBuilder and Rune
 /// ORM are built on top of this abstraction.
-public protocol Database {
+public protocol Database: class {
     /// Any migrations associated with this database, whether applied
     /// yet or not.
     var migrations: [Migration] { get set }
