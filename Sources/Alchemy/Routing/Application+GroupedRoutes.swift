@@ -12,9 +12,9 @@ extension Application {
     /// - Returns: This application for chaining handlers.
     @discardableResult
     public func grouped(_ pathPrefix: String, configure: (Application) -> Void) -> Self {
-        Services.router.pathPrefixes.append(pathPrefix)
+        Route.pathPrefixes.append(pathPrefix)
         configure(self)
-        _ = Services.router.pathPrefixes.popLast()
+        _ = Route.pathPrefixes.popLast()
         return self
     }
 }

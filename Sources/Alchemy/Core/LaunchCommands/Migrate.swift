@@ -9,7 +9,7 @@ struct Migrate<A: Application>: ParsableCommand {
     
     /// Whether migrations should be run or rolled back. If this is
     /// false (default) then all new migrations will have their
-    /// `.up` functions applied to `Services.db`. If this is
+    /// `.up` functions applied to `DB`. If this is
     /// true, the last batch will be have their `.down`
     /// functions applied.
     @Flag(help: "Should migrations be rolled back")

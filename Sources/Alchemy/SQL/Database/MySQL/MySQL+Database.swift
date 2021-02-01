@@ -38,12 +38,12 @@ public final class MySQLDatabase: Database {
                     )
                 }
             }()),
-            on: Container.global.resolve(EventLoopGroup.self)
+            on: Container.main.resolve(EventLoopGroup.self)
         )
     }
     
     public func runRawQuery(_ sql: String, values: [DatabaseValue]) -> EventLoopFuture<[DatabaseRow]> {
-        self.pool.withConnection(logger: Log.logger, on: Services.eventLoop) { conn in
+        self.pool.withConnection(logger: Log.logger, on: Loop.current) { conn in
             conn.query(sql, values.map(MySQLData.init))
                 .map { $0 }
         }
@@ -61,7 +61,7 @@ public final class MySQLDatabase: Database {
     /// - Returns: A future containing the result of fetching the last
     ///   inserted id, or the result of the original query.
     func runAndReturnLastInsertedItem(_ sql: String, table: String, values: [DatabaseValue]) -> EventLoopFuture<[DatabaseRow]> {
-        self.pool.withConnection(logger: Log.logger, on: Services.eventLoop) { conn in
+        self.pool.withConnection(logger: Log.logger, on: Loop.current) { conn in
             var lastInsertId: Int?
             return conn
                 .query(sql, values.map(MySQLData.init), onMetadata: { lastInsertId = $0.lastInsertID.map(Int.init) })

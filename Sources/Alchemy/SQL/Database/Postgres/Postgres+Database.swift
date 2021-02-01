@@ -41,12 +41,12 @@ public final class PostgresDatabase: Database {
                     )
                 }
             }()),
-            on: Container.global.resolve(EventLoopGroup.self)
+            on: Container.main.resolve(EventLoopGroup.self)
         )
     }
     
     public func runRawQuery(_ sql: String, values: [DatabaseValue]) -> EventLoopFuture<[DatabaseRow]> {
-        self.pool.withConnection(logger: Log.logger, on: Services.eventLoop) { conn in
+        self.pool.withConnection(logger: Log.logger, on: Loop.current) { conn in
             conn.query(self.positionBindings(sql), values.map(PostgresData.init) )
                 .map { $0.rows }
         }

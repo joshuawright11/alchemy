@@ -36,7 +36,7 @@ public class Inject<Service> {
     
     /// An instance of the service this property wrapper is injecting.
     public var wrappedValue: Service {
-        get { self.resolve(in: .global) }
+        get { self.resolve(in: .main) }
         set { fatalError("Injected services shouldn't be set manually.") }
     }
     
@@ -71,7 +71,7 @@ public class Inject<Service> {
     ) -> Service {
         get {
             let customContainer = (object as? Containerized)?.container
-            return object[keyPath: storageKeyPath].resolve(in: customContainer ?? .global)
+            return object[keyPath: storageKeyPath].resolve(in: customContainer ?? .main)
         }
         set {
             // This setter is needed so that the propert wrapper will

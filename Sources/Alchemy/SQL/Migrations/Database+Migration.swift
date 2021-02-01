@@ -65,7 +65,7 @@ extension Database {
     /// - Returns: A future that completes when the rollback is
     ///   finished.
     private func downMigrations(_ migrations: [Migration]) -> EventLoopFuture<Void> {
-        var elf = Services.eventLoop.future()
+        var elf = Loop.current.future()
         for m in migrations.sorted(by: { $0.name > $1.name }) {
             let statements = m.downStatements(for: self.grammar)
             elf = elf.flatMap { self.runStatements(statements: statements) }
@@ -90,7 +90,7 @@ extension Database {
     /// - Returns: A future that completes when the migration is
     ///   applied.
     private func upMigrations(_ migrations: [Migration], batch: Int) -> EventLoopFuture<Void> {
-        var elf = Services.eventLoop.future()
+        var elf = Loop.current.future()
         for m in migrations {
             let statements = m.upStatements(for: self.grammar)
             elf = elf.flatMap { self.runStatements(statements: statements) }
@@ -110,7 +110,7 @@ extension Database {
     /// - Returns: A future that completes when all statements have
     ///   been run.
     private func runStatements(statements: [SQL]) -> EventLoopFuture<Void> {
-        var elf = Services.eventLoop.future()
+        var elf = Loop.current.future()
         for statement in statements {
             elf = elf.flatMap { _ in
                 self.runRawQuery(statement.query, values: statement.bindings)

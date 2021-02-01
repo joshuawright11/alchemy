@@ -5,9 +5,9 @@ import NIO
 /// `Application`.
 struct HTTPRouterResponder: HTTPResponder {
     func respond(to request: Request) -> EventLoopFuture<Response> {
-        var handlerClosure = Services.router.handle
+        var handlerClosure = Route.handle
         
-        for middleware in Services.router.globalMiddlewares.reversed() {
+        for middleware in Route.globalMiddlewares.reversed() {
             let lastHandler = handlerClosure
             handlerClosure = { request in
                 catchError {

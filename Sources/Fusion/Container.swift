@@ -14,8 +14,8 @@ public final class Container {
     /// identifier are passed in and a service is generated.
     private typealias FactoryClosure = (Container, Any?) -> Any
     
-    /// A global, singleton container.
-    public static var global = Container()
+    /// The main service container of your Application.
+    public static var main = Container()
     
     /// The parent container of this container. Resolves that don't
     /// have a value in this container will be deferred to the

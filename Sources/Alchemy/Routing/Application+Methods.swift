@@ -21,7 +21,7 @@ extension Application {
         at path: String = "",
         handler: @escaping Handler
     ) -> Self {
-        Services.router.add(handler: handler, for: method, path: path)
+        Route.add(handler: handler, for: method, path: path)
         return self
     }
     

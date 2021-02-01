@@ -2,13 +2,19 @@ import NIO
 import RediStack
 
 /// A client for interfacing with a Redis instance.
-public final class Redis {
+public final class RedisDriver {
     /// Map of `EventLoop` identifiers to respective connection pools.
     @Locked
     private var poolStorage: [ObjectIdentifier: RedisConnectionPool] = [:]
     
     /// The configuration to create pools with.
     private var config: RedisConnectionPool.Configuration
+    
+    /// Shuts down this `Redis` client, closing it's associated
+    /// connection pools.
+    deinit {
+        self.poolStorage.values.forEach { $0.close() }
+    }
     
     /// Creates a Redis client that will connect with the given
     /// configuration.
@@ -52,18 +58,12 @@ public final class Redis {
         )
     }
     
-    /// Shuts down this `Redis` client, closing it's associated
-    /// connection pools.
-    public func shutdown() {
-        self.poolStorage.values.forEach { $0.close() }
-    }
-    
     /// Gets or creates a pool for the current `EventLoop`.
     ///
     /// - Returns: A `RedisConnectionPool` associated with the current
     ///   `EventLoop` for sending commands to.
     fileprivate func getPool() -> RedisConnectionPool {
-        let loop = Services.eventLoop
+        let loop = Loop.current
         let key = ObjectIdentifier(loop)
         if let pool = self.poolStorage[key] {
             return pool
@@ -76,7 +76,7 @@ public final class Redis {
 }
 
 /// Alchemy specific.
-extension Redis {
+extension RedisClient {
     /// Wrapper around sending commands to Redis.
     ///
     /// - Parameters:
@@ -126,9 +126,9 @@ extension Redis {
 }
 
 /// RedisClient conformance. See `RedisClient` for docs.
-extension Redis: RedisClient {
+extension RedisDriver: RedisClient {
     public var eventLoop: EventLoop {
-        Services.eventLoop
+        Loop.current
     }
     
     public func logging(to logger: Logger) -> RedisClient {
@@ -136,7 +136,7 @@ extension Redis: RedisClient {
     }
     
     public func send(command: String, with arguments: [RESPValue]) -> EventLoopFuture<RESPValue> {
-        self.getPool().send(command: command, with: arguments).hop(to: Services.eventLoop)
+        self.getPool().send(command: command, with: arguments).hop(to: Loop.current)
     }
     
     public func subscribe(

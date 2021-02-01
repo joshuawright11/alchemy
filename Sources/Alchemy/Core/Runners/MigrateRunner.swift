@@ -1,6 +1,6 @@
 import NIO
 
-/// Run migrations on `Services.db`, optionally rolling back the
+/// Run migrations on `DB`, optionally rolling back the
 /// latest batch.
 struct MigrateRunner: Runner {
     /// Indicates whether migrations should be run (`false`) or rolled
@@ -10,17 +10,17 @@ struct MigrateRunner: Runner {
     // MARK: Runner
     
     func start() -> EventLoopFuture<Void> {
-        Services.eventLoopGroup
+        Loop.group
             .next()
-            .flatSubmit(self.rollback ? Services.db.rollbackMigrations : Services.db.migrate)
+            .flatSubmit(self.rollback ? DB.rollbackMigrations : DB.migrate)
             // Shut down everything when migrations are finished.
             .map {
                 Log.info("[Migration] migrations finished, shutting down.")
-                Services.lifecycle.shutdown()
+                Lifecycle.main.shutdown()
             }
     }
     
     func shutdown() -> EventLoopFuture<Void> {
-        Services.eventLoopGroup.future()
+        Loop.group.future()
     }
 }

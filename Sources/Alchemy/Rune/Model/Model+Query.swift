@@ -5,9 +5,9 @@ public extension Model {
     /// Begin a `ModelQuery<Self>` from a given database.
     ///
     /// - Parameter database: The database to run the query on.
-    ///   Defaults to `Services.db`.
+    ///   Defaults to `DB`.
     /// - Returns: A builder for building your query.
-    static func query(database: Database = Services.db) -> ModelQuery<Self> {
+    static func query(database: Database = DB) -> ModelQuery<Self> {
         ModelQuery<Self>(database: database).from(table: Self.tableName)
     }
 }

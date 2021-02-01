@@ -35,7 +35,7 @@ public struct Scheduler {
             ) { repeatedTask in
                 Log.info("[Scheduler] starting Job `\(name(of: J.self))`.")
                 // For now, never cancel the task.
-                _ = Services.eventLoopGroup.next()
+                _ = Loop.group.next()
                     .flatSubmit(job.run)
                     .map { Log.info("[Scheduler] finished Job `\(name(of: J.self))`.") }
             }

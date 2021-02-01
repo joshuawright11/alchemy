@@ -1,7 +1,7 @@
 import NIO
 
 /// Runs a HTTP server, listening on a socket and routing incoming
-/// requests to `Services.router`. `ServeRunner` is the default
+/// requests to `Route`. `ServeRunner` is the default
 /// `Runner` of an Alchemy application.
 final class ServeRunner: Runner {
     /// The socket to bind to.
@@ -34,7 +34,7 @@ final class ServeRunner: Runner {
                 }
         }
 
-        let serverBootstrap = ServerBootstrap(group: Services.eventLoopGroup)
+        let serverBootstrap = ServerBootstrap(group: Loop.group)
             // Specify backlog and enable SO_REUSEADDR for the server
             // itself
             .serverChannelOption(ChannelOptions.backlog, value: 256)
@@ -76,6 +76,6 @@ final class ServeRunner: Runner {
     }
     
     func shutdown() -> EventLoopFuture<Void> {
-        self.channel?.close() ?? Services.eventLoopGroup.future()
+        self.channel?.close() ?? Loop.group.future()
     }
 }

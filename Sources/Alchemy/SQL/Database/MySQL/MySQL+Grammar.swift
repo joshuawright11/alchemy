@@ -60,7 +60,7 @@ final class MySQLGrammar: Grammar {
             return try values
                 .map { try self.compileInsert(query, values: [$0]) }
                 .map { database.runAndReturnLastInsertedItem($0.query, table: table, values: $0.bindings) }
-                .flatten(on: Services.eventLoop)
+                .flatten(on: Loop.current)
                 .map { $0.flatMap { $0 } }
         }
     }

@@ -1,4 +1,4 @@
-// Passthroughs on application to `Services.router`.
+// Passthroughs on application to `Route`.
 extension Application {
     /// Applies a middleware to all requests that come through the
     /// application, whether they are handled or not.
@@ -8,7 +8,7 @@ extension Application {
     /// - Returns: This Application for chaining.
     @discardableResult
     public func useAll<M: Middleware>(_ middleware: M) -> Self {
-        Services.router.globalMiddlewares.append(middleware)
+        Route.globalMiddlewares.append(middleware)
         return self
     }
     
@@ -19,7 +19,7 @@ extension Application {
     /// - Returns: This application for chaining.
     @discardableResult
     public func use<M: Middleware>(_ middleware: M) -> Self {
-        Services.router.middlewares.append(middleware)
+        Route.middlewares.append(middleware)
         return self
     }
     
@@ -36,9 +36,9 @@ extension Application {
     /// - Returns: This application for chaining handlers.
     @discardableResult
     public func group<M: Middleware>(middleware: M, configure: (Application) -> Void) -> Self {
-        Services.router.middlewares.append(middleware)
+        Route.middlewares.append(middleware)
         configure(self)
-        _ = Services.router.middlewares.popLast()
+        _ = Route.middlewares.popLast()
         return self
     }
 }

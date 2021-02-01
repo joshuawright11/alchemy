@@ -710,17 +710,17 @@ public class Query: Sequelizable {
 
 extension Query {
     /// Shortcut for running a query with the given table on
-    /// `Services.db`.
+    /// `DB`.
     ///
     /// - Parameter table: The table to run the query on.
     /// - Returns: The current query builder `Query` to chain future
     ///   queries to.
     public static func table(_ table: String) -> Query {
-        Services.db.query().table(table)
+        DB.query().table(table)
     }
 
     /// Shortcut for running a query with the given table on
-    /// `Services.db`.
+    /// `DB`.
     ///
     /// An alias for `table(_ table: String)` to be used when running
     /// a `select` query that also lets you alias the table name.
